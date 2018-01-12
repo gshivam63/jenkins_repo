@@ -1,0 +1,46 @@
+*****Tutorial 1: Installing Jenkins on Tomcat*****
+1. sudo apt-get update
+2. sudo apt-get install tomcat8
+3. sudo apt-get  install tomcat8-docs tomcat8-examples tomcat8-admin
+4. systemctl restart tomcat8
+5. systemctl status tomcat8
+6.  nano /var/lib/tomcat8/conf/tomcat-users.xml
+7.
+<tomcat-users>
+<role rolename="manager-gui"/>
+<role rolename="admin-gui"/>
+<user username="gshivam63" password="complicated" roles="manager-gui,admin-gui"/>
+</tomcat-users>
+8. systemctl restart tomcat8
+9. wget http://updates.jenkins-ci.org/download/war/2.7.3/jenkins.war
+10. open localhost:8080 ==> go to manager webapps==> fill following fields
+	Context Path: /jenkins
+	WAR or Directory URL: /home/shivam/jenkins.war
+			(or)
+	sudo apt-get install sku
+	gksudo nautilus
+	copy jenkins.war to /var/lib/tomcat8/webapps folder in super user mode
+11.
+cd /usr/share/tomcat8
+sudo mkdir .jenkins
+sudo chown tomcat8:nogroup .jenkins
+
+12. sudo service tomcat8 restart
+13. again goto manager webapps==> /jenkins
+	and enter admin password to unlock jenkins
+	use command: sudo cat /usr/share/tomcat8/.jenkins/secrets/initialAdminPassword
+
+14. Install suggested plugins and create first admin users
+
+
+
+
+
+
+
+
+
+
+
+
+
