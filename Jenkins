@@ -9,7 +9,7 @@
 <tomcat-users>
 <role rolename="manager-gui"/>
 <role rolename="admin-gui"/>
-<user username="gshivam63" password="complicated" roles="manager-gui,admin-gui"/>
+<user username="gshivam63" password="********" roles="manager-gui,admin-gui"/>
 </tomcat-users>
 8. systemctl restart tomcat8
 9. wget http://updates.jenkins-ci.org/download/war/2.7.3/jenkins.war
