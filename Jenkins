@@ -13,6 +13,7 @@
 </tomcat-users>
 8. systemctl restart tomcat8
 9. wget http://updates.jenkins-ci.org/download/war/2.7.3/jenkins.war
+wget http://updates.jenkins-ci.org/download/war/2.9/jenkins.war
 10. open localhost:8080 ==> go to manager webapps==> fill following fields
 	Context Path: /jenkins
 	WAR or Directory URL: /home/shivam/jenkins.war
@@ -31,6 +32,132 @@ sudo chown tomcat8:nogroup .jenkins
 	use command: sudo cat /usr/share/tomcat8/.jenkins/secrets/initialAdminPassword
 
 14. Install suggested plugins and create first admin users
+
+
+
+*************************Changing Home Directory****************
+default location can be find in jenkins : manage plugins under Home Directory
+step 1: $mkdir JenkinsHome
+step 2: copy everything manually from .jenkins folder under HomeDirectory to JenkinsHome folder
+step 3: change env variable - JENKINS_HOME and set to new directory
+$export JENKINS_HOME=/home/shivam/Desktop/data/JenkinsHome/
+step 4: restart jenkins
+(windows setting environment variable is okay, but in linux/mac we need to make this change permanent)
+step 5: find .profile file in home directory(hidden so press ctrl+h)
+and write the command(export JENKINS_HOME=/home/shivam/Desktop/data/JenkinsHome/) there and save it
+
+**********************USIng CLI*************
+step 1: Go to Manage Jenkins==> Configure Global Security==> check Enable Security
+Step 2: go to http://localhost:8080/jenkins/cli/
+step 3: download the jar from the link given and keep the jenkins-cli.jar file in home/any other directory from where to issue command line commands
+step 4: 
+#NOTE:on http://localhost:8080/jenkins/cli/ page link in command is given as http://jenkins:8080/jenkins/cli/ which is not working so use this link in command http://localhost:8080/jenkins
+(go to manage jenkins==> configure global security==>	TCP port for JNLP agents==>select fixed and add a random port number)
+(go to drop down to left of jenkins logout button==> configure==> and add rsa public key there to enable authentication using ssh)
+$java -jar jenkins-cli.jar -s http://localhost:8080/jenkins help
+********if ssh rsa key is not provided
+$java -jar jenkins-cli.jar -s http://localhost:8080/jenkins who-am-i --username shivam --password complicated
+
+
+************************create Users + Manage + Assign Roles**************
+Step1(Create users):Manage Jenkins==>Manage Users==>Create new user==>logout
+Login with new user credential(vasu,complicated)
+
+Step2(Configure):Go to dropdown==>configure(set api,keys,change password etc)
+
+Step3(manage roles):Manage Jenkins==>Manage Plugins==> available(filter:role strategy plugin)==>select role strategy authorization plugin==> download and restart after install
+
+Manage Jenkins==>configure global security==>check Enable security ==>in authorization: check role based strategy(DO this as admin only)
+(Now any other user will not able to login:vasu is missing the Overall/Read permission)
+**giving access to other users**
+Login as admin==>manage jenkins==>manage & assign rules==>manage roles
+*******Create 1 role at global level and 2 roles at project level*************
+	Global Roles:Role to add:employee(read,configure,create,delete,read rights)==>apply
+	project Roles: Role to add:developer	Pattern: Dev.* (assign all rights )==>apply
+	project Roles: Role to add:tester	Pattern: Test.* (assign all rights )==>apply
+##Assign these roles to users
+manage jenkins==>manage & assign rules==>assign roles
+	** Add shivam & vasu and provide them employee roles
+	** Add shivam & vasu to project roles==> make shivam as developer and vasu as tester
+## now create two free style project (DevProject1 & TestProject1)
+Now admin can see all projects but shivam can see only DevProject1 and vasu can see TestProject1)
+
+************************Basic Configurations***********************************
+Step1: Manage Jenkins==>Configure System
+
+System Message:comes on home page
+# of executors:number of parallel jobs jenkins can run
+Labels:use to create node so that any job can be serviced by that node
+Quiet Period:time between source getting in repo and getting job triggered
+SCM checkout retry count:One of trigger is SCM:it is try to connect to repo and will try to get recent code built==> in case it fails what is the maximum retry count
+restrict project naming:(Default, Pattern===New item should match pattern ex Dev.*, Role based strategy)
+Global properties:We can add environment variables like key,value==> made available for all jobs in jenkins==> ${key1} or $key1
+
+*************************Adding new Item and schedule*******************
+New item--> Test1-->Free Style Project---> Ok--> Schedule:* * * * *(run every minute)--> Add shell command:date-->applu->save==>BUILD project
+
+***********************Trigger job Remotely****************
+Drop down of project==>project==>uncheck Build Periodically==>check Trigger builds Remotely==>
+
+Give a token_name ex 1234
+go to help: copy the url and open it in new browser to build the project
+
+172.16.85.254:8080/jenkins/job/Test1/build?token=1234
+localhost:8080/jenkins/job/Test1/build?token=1234
+
+************************How to chain job executions**********
+Create 2 projects Test1 and Test2(free style projects) and give shell commands Cmd1:pwd Cmd2:ls==>apply & save
+
+Go to Test2==>configure==>build triggers==>select after other project are build: type and select Test1
+					Go to post build actions:build other projects:type and select Test3==>Apply and save==>Build Test1
+
+**************************
+
+
+**********************
+chmod 777 -R *
+
+shivam@shivam-laptop:~$ cd ..
+shivam@shivam-laptop:/home$ chmod 777 -R *
+chmod: changing permissions of 'shivam/photorec.ses': Operation not permitted
+chmod: changing permissions of 'shivam/testdisk.log': Operation not permitted
+shivam@shivam-laptop:/home$ 
+
+
+***************Maven***********************
+install: unleash mavin plugin install
+create a maven project
+tutorial 1
+tO Resolve maven error: global tool configuration:
+add maven option==> name it maven_2
+
+Build: root Pom: pom.xml
+
+
+*****************************First Maven Project*******************************
+http://tutorials.jenkov.com/maven/your-first-maven-project.html
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
 
 
 
